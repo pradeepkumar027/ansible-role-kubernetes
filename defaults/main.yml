@@ -1,0 +1,20 @@
+---
+# defaults file for kubernetes
+sysctl_conf_items:
+- net.bridge.bridge-nf-call-iptables
+- net.bridge.bridge-nf-call-ip6tables
+- net.ipv4.ip_forward
+kubernetes_yum_gpg_check: true
+kubernetes_yum_gpg_key: https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+kubernetes_yum_repo_url: https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
+kubernetes_packages:
+- name: kubectl
+  state: present
+- name: kubeadm
+  state: present
+- name: kubelet
+  state: present
+kubernetes_pod_network:
+  cni: calico
+  cidr: 192.168.0.0/16
+kubernetes_calico_manifest_file: https://projectcalico.docs.tigera.io/manifests/calico.yaml
