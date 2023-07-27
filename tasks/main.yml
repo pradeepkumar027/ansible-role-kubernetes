@@ -1,0 +1,32 @@
+---
+# tasks file for kubernetes
+- name: check kubernetes_role variable is defined and in allowed values
+  assert:
+    that:
+    - kubernetes_role is defined
+    - kubernetes_role in ['controlplane','node']
+- name: include RedHat specific tasks
+  include_tasks: RedHat.yml
+  when: ansible_os_family == "RedHat"
+- name: configure sysctl
+  sysctl:
+    name: "{{ item }}"
+    value: "1"
+    state: present
+  loop: "{{ sysctl_conf_items }}"
+- name: install kubernetes
+  package:
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+  loop: "{{ kubernetes_packages }}"
+- name: start and enable kubelet
+  service:
+    name: kubelet
+    state: started
+    enabled: true
+- name: include controlplane specific tasks
+  include_tasks: controlplane.yml
+  when: kubernetes_role == "controlplane"
+- name: include node specific tasks
+  include_tasks: node.yml
+  when: kubernetes_role == "node"

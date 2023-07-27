@@ -1,0 +1,12 @@
+- name: add kubernetes gpg key
+  rpm_key:
+    key: "{{ kubernetes_yum_gpg_key }}"
+    state: present
+- name: configure yum repository for kubernetes
+  yum_repository:
+    name: kubernetes
+    description: kubernetes
+    enabled: true
+    gpgcheck: "{{ kubernetes_yum_gpg_check }}"
+    baseurl: "{{ kubernetes_yum_repo_url }}"
+    gpgkey: "{{ kubernetes_yum_gpg_key }}"

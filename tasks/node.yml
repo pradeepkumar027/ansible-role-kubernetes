@@ -1,0 +1,7 @@
+- name: check if node already joined to a cluster
+  stat:
+    path: /etc/kubernetes/kubelet.conf
+  register: kubernetes_join_stat
+- name: join node to kubernetes controlplane
+  command: "{{ kubernetes_join_command }}"
+  when: not kubernetes_join_stat.stat.exists
